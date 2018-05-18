@@ -1,7 +1,11 @@
-from app import app
-from flask import jsonify, request
+from flask import jsonify, request, Flask
 import json
+from flask_cors import CORS, cross_origin
 
+app = Flask(__name__)
+
+
+cors = CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 @app.route('/save_keyword', strict_slashes=False, methods=['GET', 'POST'])
 def keyword():
     """
@@ -17,3 +21,6 @@ def keyword():
         with open('file.json') as f:
             data = json.load(f)
         return jsonify(data)
+
+if __name__ == "__main__":
+    app.run('127.0.0.1', 5000)

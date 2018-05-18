@@ -3,7 +3,7 @@ let search = document.getElementById("search");
 submit.addEventListener("click", function(event) {
   $.ajax ({
     method: 'POST',
-    url: 'surfperch.holberton.us/save_keyword',
+    url: 'http://surfperch.holberton.us:5000/save_keyword',
     data: { "keyword": search.value }
   })
   console.log(search.value);
