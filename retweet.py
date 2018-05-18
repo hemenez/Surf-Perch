@@ -2,6 +2,7 @@
 from flask_oauth import OAuth
 from flask import Flask, request, redirect, url_for, session, g, flash, render_template
 from app import app
+import requests
 import tweepy
 
 #oauth = OAuth()
@@ -22,15 +23,20 @@ callback_url = 'http://surfperch.holberton.us'
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_secret)
 
-api = tweepy.API(auth, wait_on_rate_limit=True)
+###api = tweepy.API(auth, wait_on_rate_limit=True)
 
-listofTweets = tweepy.Cursor(api.search, q='holberton').items(10)
+response = request.get('http://surfperch.holberton.us/save_keyword.json')
+print(response.text)
 
-for mytweet in listofTweets:
-    try:
-        api.retweet(mytweet.id_str)
-    except:
-        pass
+#with open('fake.txt', 'r') as myFile:
+#    searchFile = myFile.read()
+#    listofTweets = tweepy.Cursor(api.search, q=searchFile).items(10)
+
+###for mytweet in listofTweets:
+    ###try:
+        ###api.retweet(mytweet.id_str)
+    ###except:
+        ###pass
 
 if __name__ == "__main__":
 
