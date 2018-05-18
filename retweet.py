@@ -2,45 +2,44 @@
 
 from app import app
 from models import storage
-import requests
-import tweepy
+from flask_oauth import OAuth
+from flask import session, request, redirect
 
-callback_url = '35.196.44.215'
+oauth = OAuth()
+twitter = oauth.remote_app('twitter',
+    base_url='https://api.twitter.com/1.1/',
+    request_token_url='https://api.twitter.com/oauth/request_token',
+    access_token_url='https://api.twitter.com/oauth/access_token',
+    authorize_url='https://api.twitter.com/oauth/authenticate',
+    consumer_key='mvygqcyft9NXLWZeqFdjEDk1X',
+    consumer_secret='cCgRiVlpIkIkETa7o6yFi097PLeYjT9B83cAB1F3Rr0s4uLJGf'
+)
 
-auth = tweepy.OAuthHandler('mvygqcyft9NXLWZeqFdjEDk1X', 'cCgRiVlpIkIkETa7o6yFi097PLeYjT9B83cAB1F3Rr0s4uLJGf', callback_url)
-try:
-    redirect_url = auth.get_authorization_url()
-except tweepy.TweepError:
-    print('Error! Failed to get request token.')
+@twitter.tokengetter
+def get_twitter_token(token=None):
+    return session.get('twitter_token')
 
-storage.set('request_token', auth.request_token)
+@app.route('/login')
+def login():
+    return twitter.authorize(callback=url_for('oauth_authorized',
+        next=request.args.get('next') or request.referrer or None))
 
-verifier = request.GET.get('oauth_verifier')
+@app.route('/oauth-authorized')
+@twitter.authorized_handler
+def oauth_authorized(resp):
+    next_url = request.args.get('next') or url_for('index')
+    if resp is None:
+        print(u'You denied the request to sign in.')
+        return redirect(next_url)
 
-# Let's say this is a web app, so we need to re-build the auth handler
-# first...
-# auth = tweepy.OAuthHandler('mvygqcyft9NXLWZeqFdjEDk1X', 'cCgRiVlpIkIkETa7o6yFi097PLeYjT9B83cAB1F3Rr0s4uLJGf')
-token = storage.get('request_token')
-storage.delete('request_token')
-auth.request_token = { 'oauth_token' : token,
-                         'oauth_token_secret' : verifier }
+    session['twitter_token'] = (
+        resp['oauth_token'],
+        resp['oauth_token_secret']
+    )
+    session['twitter_user'] = resp['screen_name']
 
-try:
-    auth.get_access_token(verifier)
-except tweepy.TweepError:
-    print('Error! Failed to get access token.')
-
-key = auth.access_token
-secret = auth.access_token_secret
-
-auth.set_access_token(key, secret)
-
-api = tweepy.API(auth)
-api.update_status('tweepy + oauth!')
-
-public_tweets = api.home_timeline()
-for tweet in public_tweets:
-    print(tweet.text)
+    print('You were signed in as %s' % resp['screen_name'])
+    return redirect(next_url)
 
 if __name__ == "__main__":
 
