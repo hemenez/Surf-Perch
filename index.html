@@ -17,12 +17,26 @@
 
     <header><h1>Surfperch</h1></header>
 
-    <div>
-      
-      <div><h3>Login:</h3></div>
-      <div class="authenticate"> <!-- AUTHENTICATION GOES HERE --> </div>
-      
+    <div class="authenticate">Login: BUTTON GOES HERE</div>
+
+    <!-- if user has been authenticated -->
+    <div class="auth_success">
+      User has been authenticated!
+      Welcome, USERNAME GOES HERE
     </div>
+    <!-- else... -->
+    <div class="auth_failure">
+      User has not been authenticated!
+    </div>
+
+    <div class="keyword">
+      <form action="">
+	Input the keyword you want your retweet to contain:<br>
+	<input type="text" name="key"><br>
+	<input type="submit" value="Submit">
+      </form>
+    </div>
+
 
   </body>
 
