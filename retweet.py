@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 
 from app import app
+from models import DBStorage
 import requests
 import tweepy
 
-# callback_url = 'https://twitter.com'
+callback_url = '35.196.44.215'
 
 auth = tweepy.OAuthHandler('mvygqcyft9NXLWZeqFdjEDk1X', 'cCgRiVlpIkIkETa7o6yFi097PLeYjT9B83cAB1F3Rr0s4uLJGf', callback_url)
 try:
@@ -12,15 +13,15 @@ try:
 except tweepy.TweepError:
     print('Error! Failed to get request token.')
 
-session.set('request_token', auth.request_token)
+storage.set('request_token', auth.request_token)
 
 verifier = request.GET.get('oauth_verifier')
 
 # Let's say this is a web app, so we need to re-build the auth handler
 # first...
 # auth = tweepy.OAuthHandler('mvygqcyft9NXLWZeqFdjEDk1X', 'cCgRiVlpIkIkETa7o6yFi097PLeYjT9B83cAB1F3Rr0s4uLJGf')
-token = session.get('request_token')
-session.delete('request_token')
+token = storage.get('request_token')
+storage.delete('request_token')
 auth.request_token = { 'oauth_token' : token,
                          'oauth_token_secret' : verifier }
 
