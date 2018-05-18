@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """App"""
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from app import app
 
 
