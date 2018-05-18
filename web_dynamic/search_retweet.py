@@ -16,30 +16,12 @@ if __name__ == '__main__':
     api = tweepy.API(auth)
 
     # Fetch tweets with query
-    query = 'Texas'
-    search_tweets = tweepy.Cursor(api.search, query).items()
+    query = 'Avengers'
+    num_tweets = 1
+    search_tweets = tweepy.Cursor(api.search, query).items(num_tweets)
 
     for tweet in search_tweets:
         tweet_id = tweet.id_str
     print(search_tweets)
 
-    def retweet(api, tweet_id):
-        success = False
-        try:
-            a= api.retweet(tweet_id)
-
-            # Sleep
-            print("Sleeping...")
-            time.sleep(5)
-            success = True
-        except tweepy.TweepError as e:
-            a=e.response.text
-            b=json.loads(a)
-            error_code = b['errors'][0]['code']
- 
-            if(error_code == 327):
-                success = True
-
-        return success
-
-    retweet(api, tweet_id)
+    api.retweet(tweet_id)
