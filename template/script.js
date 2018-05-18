@@ -1,11 +1,11 @@
 let submit = document.getElementById("submit");
 let search = document.getElementById("search");
 submit.addEventListener("click", function(event) {
-  $.ajax (
+  $.ajax ({
     method: 'POST',
     url: 'surfperch.holberton.us/save_keyword',
     data: { "keyword": search.value }
-  )
+  })
   console.log(search.value);
   console.log(search.name);
   event.preventDefault();
