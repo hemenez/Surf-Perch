@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 from app import app
-from models import DBStorage
+from models import storage
 import requests
 import tweepy
 
